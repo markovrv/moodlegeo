@@ -23,7 +23,7 @@
             inline: 1,
           },
           {
-            plugin_url: url,
+            plugin_url: url,   
           }
         );
         // var code =
