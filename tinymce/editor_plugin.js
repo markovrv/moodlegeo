@@ -47,8 +47,8 @@
         cmd: "mceGeogebra",
         image: url + "/img/geoGebra.gif",
         onAction: function (_) {
-          выделить все
-          удалить 
+          // выделить все
+          // удалить 
           editor.insertContent('ваш код геогебры');
         }
       });
