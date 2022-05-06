@@ -53,7 +53,7 @@
         author: "Alexei Melkov",
         authorurl: "",
         infourl: "",
-        version: "1.051",
+        version: "1.052",
       };
     },
   });
