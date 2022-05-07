@@ -1,10 +1,8 @@
 <?php
 
+
 defined('MOODLE_INTERNAL') || die();
 
-// The current plugin version (Date: YYYYMMDDXX).
-$plugin->version   = 2022020705;
-// Required Moodle version.
-$plugin->requires  = 2012112900;
-// Full name of the plugin (used for diagnostics).
-$plugin->component = 'tinymce_geogebra';
+$plugin->version = 2022030108; // The current plugin version (Date: YYYYMMDDXX).
+$plugin->requires = 2012112900; // Required Moodle version.
+$plugin->component = 'tinymce_geogebra'; // Full name of the plugin (used for diagnostics).
