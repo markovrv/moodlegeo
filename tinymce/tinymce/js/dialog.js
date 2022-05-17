@@ -15,6 +15,42 @@ var GeoDialog = {
     tinyMCEPopup.editor.execCommand("mceInsertContent", false, inserted);
     tinyMCEPopup.close();
   },
+  reloadGraphig: function () {
+    var params = {
+      appName: "graphig",
+      width: window.screen.width - 100,
+      height: window.screen.height - 100,
+      showToolBar: true,
+      showAlgebraInput: true,
+      showMenuBar: true,
+    };
+    var applet = new GGBApplet(params, true);
+    applet.inject("ggb-element");
+  },
+  reloadGeometry: function () {
+    var params = {
+      appName: "geometry",
+      width: window.screen.width - 100,
+      height: window.screen.height - 100,
+      showToolBar: true,
+      showAlgebraInput: true,
+      showMenuBar: true,
+    };
+    var applet = new GGBApplet(params, true);
+    applet.inject("ggb-element");
+  },
+  reload3d: function () {
+    var params = {
+      appName: "3d",
+      width: window.screen.width - 100,
+      height: window.screen.height - 100,
+      showToolBar: true,
+      showAlgebraInput: true,
+      showMenuBar: true,
+    };
+    var applet = new GGBApplet(params, true);
+    applet.inject("ggb-element");
+  },
 };
 
 tinyMCEPopup.onInit.add(GeoDialog.init, GeoDialog);

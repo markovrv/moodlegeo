@@ -44,7 +44,7 @@
         author: "Alexei Melkov",
         authorurl: "",
         infourl: "",
-        version: "1.0592",
+        version: "1.061",
       };
     },
   });
