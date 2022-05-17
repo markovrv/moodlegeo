@@ -20,19 +20,49 @@ echo $OUTPUT->header();
 ?>
   <script src="https://www.geogebra.org/apps/deployggb.js"></script>
   <script>
-    var params = {
-      appName: "graphing", width: window.screen.width - 100,
-      height: window.screen.height - 150, showToolBar:
-        true, showAlgebraInput: true, showMenuBar: true,
-    };
+    // var str = window.tinyMCE.activeEditor.getContent();
+    // var appName = 'graphig';
+    // var begin = str.indexOf('ggbBase64')
+  
+    // if (begin != -1) {
+    //   begin = str.indexOf('ggbBase64')+11;
+    //   var end = str.indexOf("=='};")+2;
+    //   appName = str.slice(str.indexOf('appName')+10,str.indexOf('width')-3);
+    //   var code64 = str.slice(begin, end);
+    //   var params = {
+    //   appName: `'${appName}'`, 
+    //   width: window.screen.width - 100,
+    //   height: window.screen.height - 150, 
+    //   showToolBar: true, 
+    //   showAlgebraInput: true, 
+    //   showMenuBar: true,
+    //   ggbBase64: `'${code64}'`,
+    //   };
+    // }
+    // else {
+      var params = {
+      // appName: `'${appName}'`, 
+      appName: 'graphig', 
+      width: window.screen.width - 100,
+      height: window.screen.height - 150, 
+      showToolBar: true, 
+      showAlgebraInput: true, 
+      showMenuBar: true,
+      };
+    // }
     var applet = new GGBApplet(params, true);
     window.onload = function () {applet.inject('ggb-element');};
   </script>
   
 <div id="ggb-element">
 </div>
-<input type="button" id="insert" name="insert" value="{#insert}" onclick="GeoDialog.insert();"/>
-<input type="button" id="cancel" name="cancel" value="{#cancel}" onclick="tinyMCEPopup.close();"/>    
+<div>
+  <input type="button" id="graphig" name="graphig" value="graphig" onclick="GeoDialog.reloadGraphig();"/>
+  <input type="button" id="geometry" name="geometry" value="geometry" onclick="GeoDialog.reloadGeometry();"/>
+  <input type="button" id="3d" name="3d" value="3d" onclick="GeoDialog.reload3d();"/>
+  <input type="button" id="insert" name="insert" value="Вставить" onclick="GeoDialog.insert();"/>
+  <input type="button" id="cancel" name="cancel" value="Отмена" onclick="tinyMCEPopup.close();"/> 
+</div>   
 <?php
 
 echo $OUTPUT->footer();
