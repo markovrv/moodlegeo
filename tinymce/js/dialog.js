@@ -1,6 +1,10 @@
 tinyMCEPopup.requireLangPack();
 
 var GeoDialog = {
+  init: function  () {
+    // здесь пишем код инициализации.
+    // должна быть доступна переменная tinymce.activeEditor
+  },
   insert: function () {
     tinyMCE.activeEditor.setContent("");
     var code = ggbApplet.getBase64();

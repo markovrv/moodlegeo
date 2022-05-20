@@ -1,0 +1,7 @@
+docker ps
+docker stop
+docker rm
+docker images
+docker rmi
+docker system prune
+docker-compose up -d

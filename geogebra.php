@@ -20,6 +20,7 @@ echo $OUTPUT->header();
 ?>
   <script src="https://www.geogebra.org/apps/deployggb.js"></script>
   <script>
+    console.log(tinymce)
     // var str = window.tinyMCE.activeEditor.getContent();
     // var appName = 'graphig';
     // var begin = str.indexOf('ggbBase64')
