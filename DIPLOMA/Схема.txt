@@ -11,6 +11,4 @@
 2.3 Описание готового плагина
 3. Заключение
 
-http://testmoodle.markovrv.ru
-логин my_admin_user
-пароль my_admin_pass
+
