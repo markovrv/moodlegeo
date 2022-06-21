@@ -442,8 +442,10 @@ $PAGE->set_pagelayout('embedded');
 $editor = get_texteditor('tinymce');
 $plugin = $editor->get_plugin('geogebra');
 
-$PAGE->requires->js(new moodle_url($editor->get_tinymce_base_url() . '/tiny_mce_popup.js'));
-$PAGE->requires->js(new moodle_url($plugin->get_tinymce_file_url('js/dialog.js')));
+$PAGE->requires->js(new moodle_url
+  ($editor->get_tinymce_base_url() . '/tiny_mce_popup.js'));
+$PAGE->requires->js(new moodle_url
+  ($plugin->get_tinymce_file_url('js/dialog.js')));
 
 echo $OUTPUT->header();
 
@@ -514,39 +516,99 @@ echo $OUTPUT->footer();
 \begin{verbatim}
 var GeoDialog = {
   insert: function () {
-    tinyMCE.activeEditor.setContent("");
-    var code = ggbApplet.getBase64();
-    var inserted =
-      "<p><div id='applet_container'></div>" +
-      "<script type='text/javascript' src='https://www.geogebra.org/apps/deployggb.js'></script>" +
-      "<script type='text/javascript'>var params={appName: 'graphig', width: 720, height: 520, showToolBar: false, showAlgebraInput: false, showMenuBar: false, ggbBase64:" +
-      `'${code}'` +
-      "};var applet = new GGBApplet(params, true);" +
-      "window.onload = function () {applet.inject('applet_container');};" +
-      "</script></p>";
-    tinyMCEPopup.editor.execCommand("mceInsertContent", false, inserted);
-    tinyMCEPopup.close();
+    var content = tinyMCE.activeEditor.getContent();
+    if (content.indexOf("<div id='applet_container'></div>") == -1) 
+    {
+      tinyMCEPopup.editor.execCommand(
+        "mceInsertContent",
+        false,
+        "<div id='applet_container'></div>"
+      );
+    }
+  var divGgb = document.getElementsByClassName(
+    "appletParameters notranslate"
+  )[0];
+  var appName = divGgb.getAttribute("data-param-appname");
+  var code = ggbApplet.getBase64();
+  var width = 1920;
+  var inserted =
+    "<!-- begin -->" +
+    "<script type='text/javascript' 
+      src='https://www.geogebra.org/apps/deployggb.js'>
+    </script>" +
+    "<script type='text/javascript'>var params={ appName:" +
+    `'${appName}'` +
+    ", width:" +
+    `'${width}'` +
+    ", showToolBar: false, scaleContainerClass: 'qtext',
+    showAlgebraInput: false, showZoomButtons: false, 
+    autoHeight: true, showMenuBar: false, ggbBase64:" +
+    `'${code}'` +
+    "};var applet = new GGBApplet(params, true);" +
+    "window.onload = function () {applet.inject('applet_container');};" +
+    "</script>" +
+    "<!-- end -->";
+  var begin = content.indexOf("<!-- begin -->");
+  if (begin != -1) {
+    var end = content.indexOf("<!-- end -->");
+    content =
+    content.substring(0, begin)
+     + inserted 
+     + content.substring(end + 12);
+    tinyMCE.activeEditor.setContent(content);
+  } 
+  else tinyMCEPopup.editor.execCommand(
+    "mceInsertContent", false, inserted
+  );
+  tinyMCEPopup.close();
 },
 \end{verbatim}
-insert - функция, которая сначала очищает текстовую область, затем записывает все изменения из приложения GeoGebra в отдельную переменную code. Объявяется переменная inserted - это строка, содержащая параметры GeoGebra и div контейнер, куда оно вставится. Выполняется команда tinyMCEPopup.editor.execCommand(). Имеет 3 параметра: название команды, True/false(должен ли быть представлен пользовательский интерфейс), то что вставляется. После этого диалоговое окно закрывается методом close().\\
+insert - функция, которая вставляет все изменения из приложения GeoGebra в текстовую область редактора с помощью HTML кода. При нажатии на кнопку, сначала вся текстовая область редактора записывается в переменную content. Идет проверка на наличие контейнера с айди "applet\_container". Если его нет в content, то он создается. После с помощью библиотеки jQuery достаются параметры GeoGebra, Base64 код, размер ширины окна. Все эти данные понадобятся при вставке HTML кода. Формируется строковая переменная inserted. В ней записываются скрипты вставки аплета GeoGebra. Для того чтобы код выделялся, он ограничен комментариями <!-- begin --> и <!-- end -->. Если HTML код вставляется не первый раз, а уже существует, тогда по этим меткам он заменится настоящим, иначе внесется первая запись.
 
-reloadGraphig, reloadGeometry, reload3d - похожие функции, которые вызывают прогрузку приложения GeoGebra в id "ggb-element". Вся их разница в параметре appName. То есть, загрузка разных режимов GeoGebra.
+\begin{verbatim}
+loadLastGGB: function () {
+  var content = tinyMCE.activeEditor.getContent();
+  var begin = content.indexOf("ggbBase64");
+  if (begin != -1) {
+    begin = content.indexOf("ggbBase64") + 11;
+    var end = content.indexOf("var applet") - 3;
+    appName = content.slice(
+      content.indexOf("appName") + 9,
+      content.indexOf("width") - 3
+    );
+    var code64 = content.slice(begin, end);
+    var params = {
+      appName: `'${appName}'`,
+      showToolBar: true,
+      showAlgebraInput: true,
+      showMenuBar: true,
+    };
+  } else {
+    window.alert("В текстовой области нет аплета GeoGebra!");
+  }
+  var applet = new GGBApplet(params, true);
+  window.onload = function () {
+    applet.inject("ggb-element");
+  };
+  ggbApplet.setBase64(code64);
+  },
+\end{verbatim}
+loadLastGGB - функция, которая срабатывает при нажатии на кнопку "редактировать". Ее смысл - обновить окно вставки предыдущими параметрами GeoGebra. Сначала все содержимое текстовой области записывается в переменную content. Затем в коде ищутся ключевые метки ggbBase64 и var applet. Это начало и конец Base64 кода, который преобразовывает строку символов в график. Если метки находятся, тогда из контента достаются тип аплета и Base64, а потом обновляется окно. Если нет меток, то выводится предупреждение на экран, что в текстовой области нет аплета GeoGebra.
+
 \begin{verbatim}
 reloadGraphig: function () {
   var params = {
     appName: "graphig",
-    width: window.screen.width - 100,
-    height: window.screen.height - 100,
     showToolBar: true,
     showAlgebraInput: true,
     showMenuBar: true,
   };
   var applet = new GGBApplet(params, true);
   applet.inject("ggb-element");
+},
 \end{verbatim}
 
-В конце файла вызывается функция tinyMCEPopup.onInit.add(GeoDialog.init, GeoDialog). Срабатывает при открытии диалогового окна и инициализирует GeoDialog.
-
+reloadGraphig, reloadGeometry, reload3d - похожие функции, которые вызывают прогрузку приложения GeoGebra в id "ggb-element". Вся их разница в параметре appName. То есть, загрузка разных режимов GeoGebra. Graphig - график, Geometry - геометрия, 3d - 3д режимы.
 
 
 \Chapter{Заключение}
