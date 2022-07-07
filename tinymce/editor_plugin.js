@@ -9,13 +9,18 @@
      * @param {string} url Absolute URL to where the plugin is located.
      */
     init: function (ed, url) {
-      // Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('LatexPlugin');
       ed.addCommand("mceGeogebra", function () {
         ed.windowManager.open(
           {
             file: ed.getParam("moodle_plugin_base") + "geogebra/geogebra.php",
-            width: 840 + parseInt(ed.getLang("geogebra.delta_width", 0)),
-            height: 480 + parseInt(ed.getLang("geogebra.delta_height", 0)),
+            width:
+              window.outerWidth -
+              100 +
+              parseInt(ed.getLang("geogebra.delta_width", 0)),
+            height:
+              window.outerHeight -
+              250 +
+              parseInt(ed.getLang("geogebra.delta_height", 0)),
             inline: 1,
           },
           {
@@ -24,7 +29,6 @@
         );
       });
 
-      // Register button
       ed.addButton("geogebra", {
         title: "GeoGebra Plugin",
         cmd: "mceGeogebra",
@@ -42,13 +46,12 @@
       return {
         longname: "GeoGebra plugin",
         author: "Alexei Melkov",
-        authorurl: "",
+        authorurl: "alekseymelkov@gmail.com",
         infourl: "",
-        version: "1.061",
+        version: "1.07",
       };
     },
   });
 
-  // Register plugin
   tinymce.PluginManager.add("geogebra", tinymce.plugins.geogebra);
 })();
